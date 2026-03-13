@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "project_A_helm_frontend.fullname" . }}
+  labels:
+    {{- include "project_A_helm_frontend.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }} #if autoscaler is not set then helm wil use the replicascount
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      {{- include "project_A_helm_frontend.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate 
+    rollingUpdate:
+      maxSurge: 1 
+      maxUnavailable: 0 
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "project_A_helm_frontend.labels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      serviceAccountName: {{ include "project_A_helm_frontend.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            {{- with .Values.env}}
+          env:
+            - name: {{ .name }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .configName }}
+                  key: {{ .key }}
+              {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          
