@@ -42,24 +42,25 @@ env:
 service:
   type: ClusterIP
   port: 80
+  label: myapp
 
 # This block is for setting up the ingress 
 ingress:
   enabled: true
   className: "nginx"
   annotations: 
-     cert-manager.io/cluster-issuer: letsencrypt-production 
-     nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
-     nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internal routing is HTTP
-     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
-     nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
-     nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
-     nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
-     nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
-     nginx.ingress.kubernetes.io/limit-burst-multiplier: "2" #using strict rate limiting
-  #  because we are using free sub domain like nip.io we will have multiple hostname like this but with a single proper domain we will only have one host 
+    cert-manager.io/cluster-issuer: letsencrypt-production 
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internal routing is HTTP
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2" #using strict rate limiting
+  #  because  use we are using free sub domain like nip.io we will have multiple hostname like this but with a single proper domain we will only have one host 
   hosts:
-    - host: 34.228.94.244.nip.io
+    - host: 52.91.127.36.nip.io
       paths:
         - path: /api
           pathType: Prefix
@@ -69,7 +70,7 @@ ingress:
           pathType: Prefix
           ServiceName: "project-a-helm-frontend"
           ServicePort: 80
-    - host: 18.213.243.163.nip.io
+    - host: 54.82.4.164.nip.io
       paths:
         - path: /api
           pathType: Prefix
@@ -78,13 +79,13 @@ ingress:
         - path: /
           pathType: Prefix
           ServiceName: "project-a-helm-frontend"
-          ServicePort: 80   
-        
-  # tls: 
-  #   - secretName: felix-cert-secret
-  #     hosts:
-  #       - 34.228.94.244.nip.io
-  #       - 18.213.243.163.nip.io
+          ServicePort: 80
+  tls:
+    - hosts:
+        - 54.82.4.164.nip.io
+        - 52.91.127.36.nip.io 
+      secretName: felix-cert-secret
+      
 
 #Setting up a clusterissuer and certificate 
 
@@ -102,9 +103,9 @@ certificate:
   secretCertName: felix-cert-secret 
   issuerName: letsencrypt-production
   issuerKind: ClusterIssuer 
-  dnsNames:  
-    - 34.228.94.244.nip.io
-    - 18.213.243.163.nip.io
+  dnsNames:
+    - 54.82.4.164.nip.io
+    - 52.91.127.36.nip.io
 
 #This define my pods resource  limits and request
 resources: 
@@ -146,3 +147,9 @@ autoscaling:
   targetCPUUtilizationPercentage: 70 #We scale pod when the cpu reources get to 70%
   targetMemoryUtilizationPercentage: 70 #we scale pods when the memory usage gets to 70% 
  
+ #This is for prometheus-stacks configuration
+
+servicemonitor:
+  create: true
+  labels: kube-prometheus-stack
+  port: http

@@ -4,6 +4,7 @@ metadata:
   name: {{ include "project_A_helm_frontend.fullname" . }}
   labels:
     {{- include "project_A_helm_frontend.labels" . | nindent 4 }}
+    app: {{ .Values.service.label}}
 spec:
   type: {{ .Values.service.type }}
   ports:

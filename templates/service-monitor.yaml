@@ -1,0 +1,21 @@
+{{- if .Values.servicemonitor.create}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: project-a-servicemonitor
+  namespace: monitoring       # namespace where Prometheus is installed
+  labels:
+    release: {{ .Values.servicemonitor.labels}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.service.label}}
+    matchNames:
+      - prod           
+  endpoints:
+    - port:   {{ .Values.servicemonitor.port}}
+      interval: 30s          
+      path: /metrics         # metrics endpoint
+      scheme: http          
+      scrapeTimeout: 10s 
+{{- end }}
