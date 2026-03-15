@@ -34,6 +34,21 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
+      #sidecar ngixn prometheus exporter for my pods
+        {{- with .Values.sidecar}}
+        - name: {{ .sidecarName }}
+          image:  {{ .sidecarImage }}
+          args:
+            - -nginx.scrape-uri={{ .sidecarUrl}}
+          ports:
+            - name: {{ .portName}}
+              containerPort: {{ .containerPort}}
+              protocol: TCP
+          {{- with .resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

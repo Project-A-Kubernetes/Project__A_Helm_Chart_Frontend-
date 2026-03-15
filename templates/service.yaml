@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: {{ include "project_A_helm_frontend.fullname" . }}
   labels:
-    {{- include "project_A_helm_frontend.labels" . | nindent 4 }}
     app: {{ .Values.service.label}}
 spec:
   type: {{ .Values.service.type }}
@@ -12,5 +11,10 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    
+    - port: {{ .Values.service.matricsPort }}
+      targetPort: nginx-metrics
+      protocol: TCP
+      name: {{ .Values.service.matricsName }}
   selector:
     {{- include "project_A_helm_frontend.selectorLabels" . | nindent 4 }}
