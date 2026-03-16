@@ -16,7 +16,7 @@ sidecar:
 image:
   repository: 430695042840.dkr.ecr.us-east-1.amazonaws.com/project_a_kubernetes
   pullPolicy: IfNotPresent
-  tag: latestsha-95a85dd
+  tag: sha-66025d3
 #pod configmap
 configmap:
   enabled: true
