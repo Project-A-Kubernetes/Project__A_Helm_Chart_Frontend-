@@ -4,7 +4,7 @@ sidecar:
   sidecarImage: nginx/nginx-prometheus-exporter:1.5
   sidecarUrl: http://127.0.0.1/metrics
   portName: nginx-metrics
-  containerPort: 9113 
+  containerPort: 9113
   resources:
     requests:
       cpu: 10m
@@ -16,41 +16,35 @@ sidecar:
 image:
   repository: 430695042840.dkr.ecr.us-east-1.amazonaws.com/project_a_kubernetes
   pullPolicy: IfNotPresent
-  tag: sha-df0372d
-  
+  tag: 7ae6050b42e70ae97eb8fff893bcbae10a06e0a9
 #pod configmap
 configmap:
-  enabled: true 
+  enabled: true
   name: frontend-config
-  data: "/api" 
-
+  data: "/api"
 nameOverride: "frontend"
 fullnameOverride: "project-a-helm-frontend"
-
 serviceAccount:
   create: true
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::430695042840:role/kube-SA-OIDC
-
 # This is for setting Kubernetes Annotations to a Pod.
 podAnnotations: {}
 # This is for setting Kubernetes Labels to a Pod.
 podLabels: {}
-
 #defining pod level security... least privilledge and blast radius control
-securityContext: 
-   capabilities:
-     drop:
-     - ALL
-   readOnlyRootFilesystem: true
-   runAsNonRoot: true
-   runAsUser: 400
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 400
 #this is configmap for my deployment 
 env:
-  name: API_BASE_URL 
-  configName: frontend-config 
+  name: API_BASE_URL
+  configName: frontend-config
   key: API_BASE_URL
-
 # This is for setting up a service
 service:
   type: ClusterIP
@@ -58,14 +52,12 @@ service:
   label: project-a-application
   matricsPort: 9113
   matricsName: nginx-metrics
-
-
 # This block is for setting up the ingress 
 ingress:
   enabled: true
   className: "nginx"
-  annotations: 
-    cert-manager.io/cluster-issuer: letsencrypt-production 
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internal routing is HTTP
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
@@ -91,37 +83,31 @@ ingress:
   #       - 54.82.4.164.nip.io
   #       - 52.91.127.36.nip.io 
   #     secretName: felix-cert-secret
-      
-
 #Setting up a clusterissuer and certificate 
-
 clusterissuer:
-  enabled: false 
-  issuerName: letsencrypt-production 
+  enabled: false
+  issuerName: letsencrypt-production
   email: aghedofelix13@gmail.com
   server: https://acme-v02.api.letsencrypt.org/directory
   secretName: letsencrypt-prod-key
-  ingressName: nginx 
-
+  ingressName: nginx
 certificate:
   enabled: false
-  certificateName: project-a-felix-tls 
-  secretCertName: felix-cert-secret 
+  certificateName: project-a-felix-tls
+  secretCertName: felix-cert-secret
   issuerName: letsencrypt-production
-  issuerKind: ClusterIssuer 
+  issuerKind: ClusterIssuer
   dnsNames:
     - 54.82.4.164.nip.io
     - 52.91.127.36.nip.io
-
 #This define my pods resource  limits and request
-resources: 
+resources:
   limits:
     cpu: 100m
     memory: 128Mi
   requests:
     cpu: 100m
     memory: 128Mi
-
 # This is to setup the startup, liveness and readiness probes
 startupProbe:
   httpGet:
@@ -144,7 +130,6 @@ readinessProbe:
   initialDelaySeconds: 10
   timeoutSeconds: 2
   periodSeconds: 5
-
 # This section is for setting up autoscaling 
 autoscaling:
   enabled: true
@@ -153,7 +138,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 70 #We scale pod when the cpu reources get to 70%
   targetMemoryUtilizationPercentage: 70 #we scale pods when the memory usage gets to 70% 
   stabilizeWindowSecondsScaleUp: 30
-  selectPolicy: Max 
+  selectPolicy: Max
   policiesUp:
     - type: Percent
       value: 50
@@ -169,13 +154,11 @@ autoscaling:
     - type: Pods
       value: 1
       periodSeconds: 60
-
- #This is for prometheus-stacks configuration
-
+      #This is for prometheus-stacks configuration
 servicemonitor:
   create: true
   name: project-a-servicemonitor
-  namespace:  monitor
+  namespace: monitor
   labels: kube-prometheus-stack
-  port: service-http 
-  matchNames: prod 
+  port: service-http
+  matchNames: prod
