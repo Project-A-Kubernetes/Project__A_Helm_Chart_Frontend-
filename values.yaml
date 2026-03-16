@@ -16,7 +16,7 @@ sidecar:
 image:
   repository: 430695042840.dkr.ecr.us-east-1.amazonaws.com/project_a_kubernetes
   pullPolicy: IfNotPresent
-  tag: 7ae6050b42e70ae97eb8fff893bcbae10a06e0a9
+  tag: 430695042840.dkr.ecr.us-east-1.amazonaws.com/project_a_kubernetes:sha-0d1e686
 #pod configmap
 configmap:
   enabled: true
@@ -78,11 +78,11 @@ ingress:
           pathType: Prefix
           ServiceName: "project-a-helm-frontend"
           ServicePort: 80
-  # tls:
-  #   - hosts:
-  #       - 54.82.4.164.nip.io
-  #       - 52.91.127.36.nip.io 
-  #     secretName: felix-cert-secret
+          # tls:
+          #   - hosts:
+          #       - 54.82.4.164.nip.io
+          #       - 52.91.127.36.nip.io 
+          #     secretName: felix-cert-secret
 #Setting up a clusterissuer and certificate 
 clusterissuer:
   enabled: false
