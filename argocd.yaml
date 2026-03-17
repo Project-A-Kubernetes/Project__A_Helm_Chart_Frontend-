@@ -23,4 +23,6 @@ spec:
     retry:
       limit: 3
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=true 
+    
+    #using Github app for short live repository access with limited permission to read only....

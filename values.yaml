@@ -154,7 +154,7 @@ autoscaling:
     - type: Pods
       value: 1
       periodSeconds: 60
-      #This is for prometheus-stacks configuration
+      #This is for prometheus-discovery configuration
 servicemonitor:
   create: true
   name: project-a-servicemonitor
