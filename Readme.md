@@ -39,7 +39,7 @@ It supports full lifecycle management of the frontend application, including dep
 ![Kubernetes Architecture](images/frontend_architecture_via_ingress.png)
 
 ---
-### diagram of Argocd watching and syncing cluster
+### Diagram of Argocd watching and syncing cluster
 ![Kubernetes Architecture](images/images3.png)
 
 ---
@@ -156,7 +156,7 @@ spec:
 ---
 ## Auto updated Helm Chart diagram
 * With CICD we update the helm repo after images as been built and push to ecr automatically
-![Kubernetes Architecture](images/imnage2.png)
+![Kubernetes Architecture](images/image2.png)
 
 ## AWS ECR + IRSA Integration
 
@@ -195,6 +195,8 @@ nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
 ---
 ### Diagram of my frontend connected to my backend and database
 ![Kubernetes Architecture](images/image1.png)
+
+---
 ## Observability & Alerting
 -   monitoring: we collect Prometheus metrics for container health, CPU, memory, and request  rates
 -   Alerts configured for errors rate, success rate, or failed deployments (SLI, SLO, Error Budget, Burn rate)
@@ -244,7 +246,7 @@ argocd app create -f <Application_Name>
 
   * Chart version (`Chart.yaml`)
   * App version (`appVersion`)
-* Tag releases in Git
+* Tag releases in Git using SHA commit 
 
 ---
 
@@ -280,6 +282,7 @@ Future improvements:
 * Enforced HTTPS
 * No secrets in ConfigMaps or Chart
 * Least privilege IAM (IRSA)
+* Use Github app for short live access to repository
 * Resource limits to prevent abuse
 
 ---
@@ -291,6 +294,7 @@ This Helm chart delivers a **production-ready frontend platform** with:
 * Secure ingress and TLS
 * Autoscaling
 * Observability
+* Reliability
 * GitOps-driven deployments
 
 Designed to reflect **real-world DevOps engineering standards** used in production environments.
