@@ -201,6 +201,10 @@ nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
 ## Observability & Alerting
 -   monitoring: we collect Prometheus metrics for container health, CPU, memory, and request  rates
 -   Alerts configured for errors rate, success rate, or failed deployments (SLI, SLO, Error Budget, Burn rate)
+
+--- 
+### A sidecar was injected to the pod so it can scrape nginx metric for prometheus to use /metrics
+
 ### Prometheus Alert Example
 
 ```yaml
@@ -255,6 +259,7 @@ argocd app create -f <Application_Name>
 ## Scalability & Reliability
 
 * HPA-based scaling
+* Pod health Probing
 * Rolling updates (zero downtime)
 * Canary Release
 * Stateless design
@@ -283,6 +288,7 @@ Future improvements:
 
 * Enforced HTTPS
 * No secrets in ConfigMaps or Chart
+* Pod was giving least permission in the clutser using **securitContext** in Deployment
 * Least privilege IAM (IRSA)
 * Use Github app for short live access to repository with leaset permission
 * Resource limits to prevent abuse
