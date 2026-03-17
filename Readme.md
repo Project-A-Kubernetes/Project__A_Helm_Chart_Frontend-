@@ -288,9 +288,9 @@ Future improvements:
 
 * Enforced HTTPS
 * No secrets in ConfigMaps or Chart
-* Pod was giving least permission in the clutser using **securitContext** in Deployment
+* Pod was giving least permission in the cluster using **securitContext** in Deployment
 * Least privilege IAM (IRSA)
-* Use Github app for short live access to repository with leaset permission
+* Use Github app for short live access to repository with least permission
 * Resource limits to prevent abuse
 
 ---
