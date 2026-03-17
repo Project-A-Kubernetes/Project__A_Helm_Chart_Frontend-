@@ -155,7 +155,7 @@ spec:
 
 ---
 ## Auto updated Helm Chart diagram
-* With CICD we update the helm repo after images as been built and push to ecr automatically
+* With CICD we update the helm repo after images has been built and push to ecr automatically
 ![Kubernetes Architecture](images/image2.png)
 
 ## AWS ECR + IRSA Integration
@@ -173,7 +173,7 @@ kubectl create secret docker-registry ecr-secret \
 
 ### IRSA (IAM Role for Service Account)
 
-* Associate IAM role(created with terraform) with Kubernetes ServiceAccount
+* Associated IAM role(created with terraform) with Kubernetes ServiceAccount
 * Grant least-privilege access (ECR pullOnly)
 
 ---
@@ -204,6 +204,25 @@ nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
 
 --- 
 ### A sidecar was injected to the pod so it can scrape nginx metric for prometheus to use /metrics
+
+---
+### Picture of prometheus rule configured and backend service discovey
+---
+![Kubernetes Observability Architecture](images/image.png)
+
+- This prometheus rule send alert to slack channel when pod is crashing or
+- when pod CPU and memory Usage exceed limits defined in the **resources:**
+- It Collects metrics and send ALERT when our SLO is **violated** to slack teams or pagerduty if configured
+---
+
+### Picture of  Alert firing because Violated SLI,SLO,BURN_RATE 
+![Kubernetes Observability Architecture](images/image6.png)
+
+---
+### Picture of Alert when issue was resolved and Alert stop firing 
+![Kubernetes Observability Architecture](images/image7.png)
+
+---
 
 ### Prometheus Alert Example
 
@@ -246,12 +265,12 @@ argocd app create -f <Application_Name>
 
 ## Release Strategy
 
-* Follow **Semantic Versioning (SemVer)**
+* Follow **SHA- commit versioning**
 * Separate:
 
   * Chart version (`Chart.yaml`)
   * App version (`appVersion`)
-* Tag releases in Git using SHA commit 
+* Tag releases in Git using SHA commit and label
 * Canary Release
 
 ---
@@ -280,6 +299,7 @@ Future improvements:
 
 * Service mesh (Istio / Linkerd)
 * Cluster Autoscaler 
+* Network Policy
 * Blue and Green Release
 
 ---
