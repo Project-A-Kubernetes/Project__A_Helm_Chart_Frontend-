@@ -215,7 +215,7 @@ nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
 - It Collects metrics and send ALERT when our SLO is **violated** to slack teams or pagerduty if configured
 ---
 
-### Picture of  Alert firing because Violated SLI,SLO,BURN_RATE 
+### Picture of  Alert firing because of Violated SLI,SLO,BURN_RATE 
 ![Kubernetes Observability Architecture](images/image6.png)
 
 ---
