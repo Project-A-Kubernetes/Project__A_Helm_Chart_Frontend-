@@ -223,7 +223,10 @@ nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
 ![Kubernetes Observability Architecture](images/image7.png)
 
 ---
-
+> **Note:** Check [`project-a-observability` ](https://github.com/Project-A-Kubernetes/Project_A_Observability.git) for the observability Helm chart Automated with Argocd.
+---
+> **Important** Check [`project-a-cluster-stacks-tools` ](https://github.com/Project-A-Kubernetes/Project_A_STACKS_TOOLS.git) for the monitoring stacks, networking and security Helm chart automated with Argocd.
+---
 ### Prometheus Alert Example
 
 ```yaml

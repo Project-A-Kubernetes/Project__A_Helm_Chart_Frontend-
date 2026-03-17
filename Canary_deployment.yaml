@@ -1,0 +1,164 @@
+#configurations for my sidecar
+sidecar:
+  sidecarName: nginx-prometheus-exporter
+  sidecarImage: nginx/nginx-prometheus-exporter:1.5
+  sidecarUrl: http://127.0.0.1/metrics
+  portName: nginx-metrics
+  containerPort: 9113
+  resources:
+    requests:
+      cpu: 10m
+      memory: 16Mi
+    limits:
+      cpu: 10m
+      memory: 16Mi
+# This sets the container image 
+image:
+  repository: 430695042840.dkr.ecr.us-east-1.amazonaws.com/project_a_kubernetes
+  pullPolicy: IfNotPresent
+  tag: sha-d751871
+#pod configmap
+configmap:
+  enabled: true
+  name: frontend-config
+  data: "/api"
+nameOverride: "frontend"
+fullnameOverride: "project-a-helm-frontend"
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::430695042840:role/kube-SA-OIDC
+# This is for setting Kubernetes Annotations to a Pod.
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+podLabels: {}
+#defining pod level security... least privilledge and blast radius control
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 400
+#this is configmap for my deployment 
+env:
+  name: API_BASE_URL
+  configName: frontend-config
+  key: API_BASE_URL
+# This is for setting up a service
+service:
+  type: ClusterIP
+  port: 80
+  label: project-a-application
+  matricsPort: 9113
+  matricsName: nginx-metrics
+# This block is for setting up the ingress 
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internal routing is HTTP
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2" #using strict rate limiting
+  #  because  use we are using free sub domain like nip.io we will have multiple hostname like this but with a single proper domain we will only have one host 
+  hosts:
+    #- host: localhost
+    - paths:
+        - path: /api
+          pathType: Prefix
+          ServiceName: "project-a-helm-backend"
+          ServicePort: 8000
+        - path: /
+          pathType: Prefix
+          ServiceName: "project-a-helm-frontend"
+          ServicePort: 80
+          # tls:
+          #   - hosts:
+          #       - 54.82.4.164.nip.io
+          #       - 52.91.127.36.nip.io 
+          #     secretName: felix-cert-secret
+#Setting up a clusterissuer and certificate 
+clusterissuer:
+  enabled: false
+  issuerName: letsencrypt-production
+  email: aghedofelix13@gmail.com
+  server: https://acme-v02.api.letsencrypt.org/directory
+  secretName: letsencrypt-prod-key
+  ingressName: nginx
+certificate:
+  enabled: false
+  certificateName: project-a-felix-tls
+  secretCertName: felix-cert-secret
+  issuerName: letsencrypt-production
+  issuerKind: ClusterIssuer
+  dnsNames:
+    - 54.82.4.164.nip.io
+    - 52.91.127.36.nip.io
+#This define my pods resource  limits and request
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+# This is to setup the startup, liveness and readiness probes
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  failureThreshold: 30
+  timeoutSeconds: 2
+  periodSeconds: 5
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 2
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 10
+  timeoutSeconds: 2
+  periodSeconds: 5
+# This section is for setting up autoscaling 
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70 #We scale pod when the cpu reources get to 70%
+  targetMemoryUtilizationPercentage: 70 #we scale pods when the memory usage gets to 70% 
+  stabilizeWindowSecondsScaleUp: 30
+  selectPolicy: Max
+  policiesUp:
+    - type: Percent
+      value: 50
+      periodSeconds: 60
+    - type: Pods
+      value: 4
+      periodSeconds: 60
+  stabilizeWindowSecondsScaleDown: 300
+  policiesDown:
+    - type: Percent
+      value: 20
+      periodSeconds: 60
+    - type: Pods
+      value: 1
+      periodSeconds: 60
+      #This is for prometheus-discovery configuration
+servicemonitor:
+  create: true
+  name: project-a-servicemonitor
+  namespace: monitor
+  labels: kube-prometheus-stack
+  port: service-http
+  matchNames: prod
