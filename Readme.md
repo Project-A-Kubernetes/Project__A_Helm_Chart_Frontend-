@@ -184,6 +184,7 @@ Recommended annotations:
 
 ```yaml
 nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internalrouting is HTTP
+nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
 nginx.ingress.kubernetes.io/proxy-body-size: "10m"
 cert-manager.io/cluster-issuer: letsencrypt-production
 nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
@@ -247,6 +248,7 @@ argocd app create -f <Application_Name>
   * Chart version (`Chart.yaml`)
   * App version (`appVersion`)
 * Tag releases in Git using SHA commit 
+* Canary Release
 
 ---
 
@@ -254,7 +256,7 @@ argocd app create -f <Application_Name>
 
 * HPA-based scaling
 * Rolling updates (zero downtime)
-* canary Release
+* Canary Release
 * Stateless design
 
 ---
@@ -282,7 +284,7 @@ Future improvements:
 * Enforced HTTPS
 * No secrets in ConfigMaps or Chart
 * Least privilege IAM (IRSA)
-* Use Github app for short live access to repository
+* Use Github app for short live access to repository with leaset permission
 * Resource limits to prevent abuse
 
 ---
