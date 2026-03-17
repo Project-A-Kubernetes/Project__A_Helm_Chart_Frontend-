@@ -57,6 +57,10 @@ ingress:
   enabled: true
   className: "nginx"
   annotations:
+  #SETTING UP CANARY RELEASE FOR INGRESS
+  # Now 40% of the traffic New Relase will be forward to the ingress here while the other (values.yaml) still serving the old Release
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "40"
     cert-manager.io/cluster-issuer: letsencrypt-production
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internal routing is HTTP
