@@ -40,7 +40,7 @@ It supports full lifecycle management of the frontend application, including dep
 
 ---
 ### diagram of Argocd watching and syncing cluster
-![Kubernetes Architecture](images/image3.png)
+![Kubernetes Architecture](images/images3.png)
 
 ---
 
