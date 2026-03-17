@@ -13,6 +13,7 @@ It supports full lifecycle management of the frontend application, including dep
 * Kubernetes-native deployment (Deployment, Service, Ingress)
 * Automated TLS with cert-manager (ClusterIssuer + Certificate)
 * Horizontal Pod Autoscaling (HPA)
+* Canary Release Strategy
 * serviceAccount(Role) for short live access to AWS
 * Prometheus monitoring via ServiceMonitor
 * GitOps-ready with ArgoCD Application
@@ -30,6 +31,7 @@ It supports full lifecycle management of the frontend application, including dep
 * HPA
 * ServiceMonitor
 * serviceAccount
+* Canary Release
 * ClusterIssuer & Certificate
 * ArgoCD Application
 
@@ -59,6 +61,7 @@ frontend-helm-chart/
 │   ├── servicemonitor.yaml
 │   ├── clusterissuer.yaml
 │   ├── certificate.yaml
+|   |__ Canary_Release.yaml 
 │   ├── argocd-application.yaml
 │   └── _helpers.tpl
 ```
