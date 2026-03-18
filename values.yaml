@@ -58,13 +58,13 @@ ingress:
   className: "nginx"
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl/tls redirect 
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internal routing is HTTP
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
-    nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
+    nginx.ingress.kubernetes.io/limit-rps: "5" #adjust as required
     nginx.ingress.kubernetes.io/limit-burst-multiplier: "2" #using strict rate limiting
   #  because  use we are using free sub domain like nip.io we will have multiple hostname like this but with a single proper domain we will only have one host 
   hosts:

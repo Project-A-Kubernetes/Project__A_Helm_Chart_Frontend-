@@ -12,7 +12,7 @@ It supports full lifecycle management of the frontend application, including dep
 
 * Kubernetes-native deployment (Deployment, Service, Ingress)
 * Automated TLS with cert-manager (ClusterIssuer + Certificate)
-* Horizontal Pod Autoscaling (HPA)
+* Horizontal Pod Autoscaling (HPA) to dynamically scale workloads based on resource utilization and reduce operational cost
 * Canary Release Strategy
 * serviceAccount(Role) for short live access to AWS
 * Prometheus monitoring via ServiceMonitor
@@ -186,14 +186,14 @@ kubectl create secret docker-registry ecr-secret \
 Recommended annotations:
 
 ```yaml
-nginx.ingress.kubernetes.io/backend-protocol: "HTTP" #internalrouting is HTTP
-nginx.ingress.kubernetes.io/force-ssl-redirect: "true" #forcing ssl request 
+nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  #internal routing
+nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # enforce SSL/TLS redirection 
 nginx.ingress.kubernetes.io/proxy-body-size: "10m"
 cert-manager.io/cluster-issuer: letsencrypt-production
 nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
 nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
 nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
-nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
+nginx.ingress.kubernetes.io/limit-rps: "5" #adjust as required
 
 ```
 ---
@@ -202,8 +202,10 @@ nginx.ingress.kubernetes.io/limit-rps: "5" #change to desire
 
 ---
 ## Observability & Alerting
--   monitoring: we collect Prometheus metrics for container health, CPU, memory, and request  rates
--   Alerts configured for errors rate, success rate, or failed deployments (SLI, SLO, Error Budget, Burn rate)
+- Metrics collected via Prometheus for CPU, memory, request rate, and application health
+- ServiceMonitor used for automatic service discovery
+- Alerts defined using PrometheusRule based on SLI/SLO thresholds
+- Integrated with alerting channels (Slack / PagerDuty)
 
 --- 
 ### A sidecar was injected to the pod so it can scrape nginx metric for prometheus to use /metrics
@@ -271,13 +273,9 @@ argocd app create -f <Application_Name>
 
 ## Release Strategy
 
-* Follow **SHA- commit versioning**
-* Separate:
-
-  * Chart version (`Chart.yaml`)
-  * App version (`appVersion`)
-* Tag releases in Git using SHA commit and label
-* Canary Release
+- Image versioning based on Git commit SHA for traceability
+- Optional `latest` tag for development environments only
+- Separation of Helm chart version (`Chart.yaml`) and application version (`appVersion`)
 
 ---
 
@@ -312,12 +310,11 @@ Future improvements:
 
 ## Security Best Practices
 
-* Enforced HTTPS
-* No secrets in ConfigMaps or Chart
-* Pod was giving least permission in the cluster using **securitContext** in Deployment
-* Least privilege IAM (IRSA)
-* Use Github app for short live access to repository with least permission
-* Resource limits to prevent abuse
+- Pods configured with restrictive securityContext (non-root, read-only filesystem where applicable)
+- No secrets stored in Helm charts or repositories
+- IAM Roles for Service Accounts (IRSA) for fine-grained AWS access
+- Enforced HTTPS via ingress with TLS termination
+- GitHub App authentication for secure repository access
 
 ---
 
