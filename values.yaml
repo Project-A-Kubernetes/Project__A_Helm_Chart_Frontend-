@@ -96,14 +96,14 @@ ingress:
 
 #Setting up a clusterissuer and certificate 
 clusterissuer:
-  enabled: false
+  enabled: true
   issuerName: letsencrypt-production
   email: aghedofelix13@gmail.com
   server: https://acme-v02.api.letsencrypt.org/directory
   secretName: letsencrypt-prod-key
   ingressName: nginx
 certificate:
-  enabled: false
+  enabled: true
   certificateName: project-a-felix-tls
   secretCertName: felix-cert-secret
   issuerName: letsencrypt-production
