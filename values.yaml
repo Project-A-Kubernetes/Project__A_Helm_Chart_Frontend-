@@ -69,7 +69,7 @@ ingress:
   #  because  use we are using free sub domain like nip.io we will have multiple hostname like this but with a single proper domain we will only have one host 
   hosts:
     - host: 44.218.141.117.nip.io
-    - paths:
+      paths:
         - path: /api
           pathType: Prefix
           ServiceName: "project-a-helm-backend"
@@ -79,7 +79,7 @@ ingress:
           ServiceName: "project-a-helm-frontend"
           ServicePort: 80
     - host: 52.5.62.30.nip.io 
-    - paths:
+      paths:
         - path: /api
           pathType: Prefix
           ServiceName: "project-a-helm-backend"
