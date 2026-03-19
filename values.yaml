@@ -16,7 +16,7 @@ sidecar:
 image:
   repository: 430695042840.dkr.ecr.us-east-1.amazonaws.com/project_a_kubernetes
   pullPolicy: IfNotPresent
-  tag: sha-d751871
+  tag: sha-27c786e
 #pod configmap
 configmap:
   enabled: true
@@ -78,7 +78,7 @@ ingress:
           pathType: Prefix
           ServiceName: "project-a-helm-frontend"
           ServicePort: 80
-    - host: 52.5.62.30.nip.io 
+    - host: 52.5.62.30.nip.io
       paths:
         - path: /api
           pathType: Prefix
@@ -91,9 +91,8 @@ ingress:
   tls:
     - hosts:
         - 44.218.141.117.nip.io
-        - 52.5.62.30.nip.io 
+        - 52.5.62.30.nip.io
       secretName: felix-cert-secret
-
 #Setting up a clusterissuer and certificate 
 clusterissuer:
   enabled: true
@@ -110,8 +109,7 @@ certificate:
   issuerKind: ClusterIssuer
   dnsNames:
     - 44.218.141.117.nip.io
-    - 52.5.62.30.nip.io 
-
+    - 52.5.62.30.nip.io
 #This define my pods resource  limits and request
 resources:
   limits:
