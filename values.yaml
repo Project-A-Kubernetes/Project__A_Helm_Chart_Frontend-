@@ -88,11 +88,11 @@ ingress:
           pathType: Prefix
           ServiceName: "project-a-helm-frontend"
           ServicePort: 80
-          tls:
-            - hosts:
-                - 44.218.141.117.nip.io
-                - 52.5.62.30.nip.io 
-              secretName: felix-cert-secret
+  tls:
+    - hosts:
+        - 44.218.141.117.nip.io
+        - 52.5.62.30.nip.io 
+      secretName: felix-cert-secret
 
 #Setting up a clusterissuer and certificate 
 clusterissuer:
